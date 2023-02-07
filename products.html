@@ -60,6 +60,7 @@
             </tr>
           </tbody>
         </table>
+        <pagination :pages="page" :get-products="getProducts"></pagination>
       </div>
       <!-- Modal -->
       <div
@@ -284,7 +285,13 @@
         aria-labelledby="delProductModalLabel"
         aria-hidden="true"
       >
-        <div class="modal-dialog">
+        <product-modal :temp-product="tempProduct" :update-product="updateProduct" :delete-product="deleteProduct"></product-modal>
+      </div>
+      <!-- Modal -->
+    </div>
+
+    <script type="text/x-template" id="product-modal-template">
+      <div class="modal-dialog">
           <div class="modal-content border-0">
             <div class="modal-header bg-danger text-white">
               <h5 id="delProductModalLabel" class="modal-title">
@@ -313,10 +320,7 @@
             </div>
           </div>
         </div>
-      </div>
-      <!-- Modal -->
-    </div>
-
+    </script>
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.9.1/axios.min.js"
       integrity="sha512-Xk3wWei2TGrsh9kDSBKUMIjw/86sLUvhtnv9f7fOuIwhhiUTKz8szkWkzHthrM5Bb3Bu9idSzkxOrkzhcneuiw=="

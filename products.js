@@ -1,4 +1,5 @@
 import { createApp } from "https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.26/vue.esm-browser.min.js";
+import pagination from "./pagination.js";
 
 const site = "https://vue3-course-api.hexschool.io/v2/";
 const api_path = "ufo060204";
@@ -14,6 +15,9 @@ const app = createApp({
         imagesUrl: [],
       },
       isNew: false, // 確認是編輯或是新增所使用的
+      page: {
+
+      },
     };
   },
   methods: {
@@ -31,19 +35,20 @@ const app = createApp({
         });
     },
     // 取得產品列表
-    getProducts() {
-      const url = `${site}api/${api_path}/admin/products/all`;
+    getProducts(page = 1) { // 參數預設值，沒有的話會是 undefined
+      const url = `${site}api/${api_path}/admin/products/?page=${page}`;
       axios
         .get(url)
         .then((res) => {
           this.products = res.data.products;
+          this.page = res.data.pagination;
         })
         .catch((err) => {
           console.log(err.data.message);
         });
     },
-    openModal(status,product) {
-      if(status === 'create') {
+    openModal(status, product) {
+      if (status === "create") {
         productModal.show();
         this.isNew = true;
         // 會帶入初始化資料
@@ -51,13 +56,13 @@ const app = createApp({
           // 會傳入多張圖片，所以要帶上 imagesUrl，以防陣列結構出錯
           imagesUrl: [],
         };
-      }else if(status === 'edit') {
+      } else if (status === "edit") {
         productModal.show();
         this.isNew = false;
         // 會帶入當前要編輯的資料
         // 展開語法，不會去動到原本的資料
         this.tempProduct = { ...product };
-      }else if(status === 'delete') {
+      } else if (status === "delete") {
         delProductModal.show();
         this.tempProduct = { ...product }; // 等等取 id 使用
       }
@@ -67,9 +72,9 @@ const app = createApp({
       let url = `${site}api/${api_path}/admin/product`;
       // 用 this.isNew 判斷 API 要怎麼運行
       let method = "post";
-      if(!this.isNew) {
+      if (!this.isNew) {
         url = `${site}api/${api_path}/admin/product/${this.tempProduct.id}`;
-        method = 'put'
+        method = "put";
       }
 
       // 資料在 data 裡面
@@ -87,11 +92,12 @@ const app = createApp({
     },
     createImages() {
       this.tempProduct.imagesUrl = [];
-      this.tempProduct.imagesUrl.push('');
+      this.tempProduct.imagesUrl.push("");
     },
     deleteProduct() {
       const url = `${site}api/${api_path}/admin/product/${this.tempProduct.id}`;
-      axios.delete(url)
+      axios
+        .delete(url)
         .then((res) => {
           this.getProducts();
           delProductModal.hide();
@@ -99,7 +105,11 @@ const app = createApp({
         .catch((err) => {
           console.log(err.data.message);
         });
-    }
+    },
+  },
+  // 區域元件一次可以這側許多子元件，這邊要加上 s
+  components: {
+    pagination,
   },
   mounted() {
     // 取出 token
@@ -121,4 +131,11 @@ const app = createApp({
   },
 });
 
+app.component("product-modal", {
+  props: ["tempProduct", "updateProduct", "deleteProduct"],
+  template: "#product-modal-template",
+});
+// import 滿多都會使用區域註冊
+// 全域註冊的寫法
+// app.component('pagination', pagination);
 app.mount("#app");
