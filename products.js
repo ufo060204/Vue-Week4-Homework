@@ -4,8 +4,9 @@ import pagination from "./pagination.js";
 const site = "https://vue3-course-api.hexschool.io/v2/";
 const api_path = "ufo060204";
 
-let productModal = {};
-let delProductModal = {};
+// 初始值賦予
+let productModal = null;
+let delProductModal = null;
 
 const app = createApp({
   data() {
@@ -44,7 +45,7 @@ const app = createApp({
           this.page = res.data.pagination;
         })
         .catch((err) => {
-          console.log(err.data.message);
+          alert(err.data.message);
         });
     },
     openModal(status, product) {
@@ -81,13 +82,14 @@ const app = createApp({
       // 用變數 method 來帶入 post
       axios[method](url, { data: this.tempProduct })
         .then((res) => {
+          alert(res.data.message);
           // 重新取得產品列表
           this.getProducts();
           // 建立新產品後關閉 modal
           productModal.hide();
         })
         .catch((err) => {
-          console.log(err.data.message);
+          alert(err.data.message);
         });
     },
     createImages() {
@@ -99,11 +101,12 @@ const app = createApp({
       axios
         .delete(url)
         .then((res) => {
+          alert(res.data.message);
           this.getProducts();
           delProductModal.hide();
         })
         .catch((err) => {
-          console.log(err.data.message);
+          alert(err.data.message);
         });
     },
   },

@@ -39,9 +39,8 @@
               <td class="text-end">{{ product.origin_price }}</td>
               <td class="text-end">{{ product.price }}</td>
               <td>
-                <span class="text-success">{{ product.is_enabled ? '啟用' : '未啟用' }}</span>
-                <!-- <span class="text-success" v-if="product.is_enabled">啟用</span>
-                <span v-else>未啟用</span> -->
+                <span class="text-success" v-if="product.is_enabled">啟用</span>
+                <span v-else>未啟用</span>
               </td>
               <td>
                 <div class="btn-group">
@@ -75,7 +74,7 @@
           <div class="modal-content border-0">
             <div class="modal-header bg-dark text-white">
               <h5 id="productModalLabel" class="modal-title">
-                <span>新增產品</span>
+                <span>{{ isNew ? '新增產品' : '編輯產品' }}</span>
               </h5>
               <button
                 type="button"
@@ -105,8 +104,8 @@
                     <h4>多圖設置</h4>
                     <!-- key 值建議用 id 去帶，沒有的話再用其他方式 -->
                     <!-- 判斷  tempProduct.imagesUrl 是一個陣列-->
-                    <div v-if="Array.isArray(tempProduct.imagesUrl)">
-                      <template
+                    <template v-if="Array.isArray(tempProduct.imagesUrl)">
+                      <div
                         v-for="(img, key) in tempProduct.imagesUrl"
                         :key="key +1234"
                       >
@@ -120,7 +119,7 @@
                           alt=""
                           class="img-fluid mb-2"
                         />
-                      </template>
+                      </div>
                       <!-- 判斷新增、刪除出現的時機 -->
                       <!-- 
                         if -> 新增
@@ -144,7 +143,7 @@
                       >
                         刪除圖片
                       </button>
-                    </div>
+                    </template>
                     <div v-else>
                       <button 
                         class="btn btn-outline-primary btn-sm d-block w-100"
